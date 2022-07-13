@@ -12,11 +12,28 @@ export default function Import() {
   const [step, setStep] = useState(0);
   const [hasError, sethasError] = useState(false);
   const [data, setData] = useState<IData[]>([]);
-
+  const [file, setFile] = useState<File>();
   const steps: IconNames[] = ["upload", "process", "table"];
 
-  const handleParse = (file: File) => {
+  const [values, setValues] = useState({
+    depth: "",
+    inclination: "",
+    azimuth: "",
+    unitOfMeasurement: "",
+    separator: ",",
+    numHeaderRows: 2,
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const handleParse = () => {
     sethasError(false);
+
+    if (!file) return;
     try {
       console.log(file);
       Papa.parse<any>(file, {
@@ -63,24 +80,116 @@ export default function Import() {
               <FilePicker
                 placeholder={"No file selected"}
                 hasError={hasError}
-                handleUpload={handleParse}
+                handleUpload={(file) => setFile(file)}
+                //  handleUpload={handleParse}
                 accept=".csv"
               />
             </div>
             <div className="pt-6">
-              <button className="bg-neutral-800 text-white font-bold py-3 px-6 rounded-lg">
+              <button
+                className={`${
+                  !file ? "bg-neutral-400" : "bg-neutral-800"
+                } text-white font-bold py-3 px-6 rounded-lg`}
+                disabled={!file}
+                onClick={handleParse}
+              >
                 Process data
               </button>
             </div>
           </div>
         ) : step === 1 ? (
           <div>
-            <p className="text-base pb-2">Preview</p>
-            <table className="w-full">
+            <div className="pb-5 max-w-4xl">
+              <h2 className="text-xl font-bold">Define input data</h2>
+              <div className="grid grid-cols-2 gap-6 py-5">
+                <div>
+                  <div className="py-1">
+                    <label>Depth</label>
+                    <select
+                      className="w-full py-2 px-3 rounded-md text-sm"
+                      name="depth"
+                      onChange={handleChange}
+                    >
+                      {Object.keys(data[0]).map((key, index) => (
+                        <option value={key} key={index}>
+                          {key} (col {index + 1})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="py-1">
+                    <label>Inclination</label>
+                    <select
+                      className="w-full py-2 px-3 rounded-md text-sm"
+                      name="inclination"
+                      onChange={handleChange}
+                    >
+                      {Object.keys(data[0]).map((key, index) => (
+                        <option value={key} key={index}>
+                          {key} (col {index + 1})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="py-1">
+                    <label>Azimuth</label>
+                    <select
+                      className="w-full py-2 px-3 rounded-md text-sm"
+                      name="azimuth"
+                      onChange={handleChange}
+                    >
+                      {Object.keys(data[0]).map((key, index) => (
+                        <option value={key} key={index}>
+                          {key} (col {index + 1})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <div className="py-1">
+                    <label>Depth unit of measurement</label>
+                    <select
+                      className="w-full py-2 px-3 rounded-md text-sm"
+                      name="unitOfMeasurement"
+                      onChange={handleChange}
+                    >
+                      <option value={"ft"}>Feet</option>
+                      <option value={"m"}>Meter</option>
+                      <option value={"cm"}>Centimeter</option>
+                      <option value={"km"}>Kilometer</option>
+                    </select>
+                  </div>
+                  <div className="py-1">
+                    <label>Decimal separator</label>
+                    <select
+                      className="w-full py-2 px-3 rounded-md text-sm"
+                      name="separator"
+                      onChange={handleChange}
+                    >
+                      <option value=".">Dot</option>
+                      <option value=",">Comma</option>
+                    </select>
+                  </div>
+                  <div className="py-1">
+                    <label>Number of header rows</label>
+                    <input
+                      className="w-full py-2 px-3 rounded-md text-sm border border-gray-500"
+                      type="number"
+                      name="numHeaderRows"
+                      onChange={handleChange}
+                      value={values.numHeaderRows}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h2 className="text-xl font-bold">Preview</h2>
+            <table className="w-full mt-5">
               <thead>
                 <tr>
                   {Object.keys(data[0]).map((key, index) => (
-                    <th key={index} scope="col p-2" className="border">
+                    <th key={index} scope="col p-2 text-xs" className="border">
                       {key}
                     </th>
                   ))}
@@ -90,7 +199,11 @@ export default function Import() {
                 {data.map((row, index) => (
                   <tr key={index}>
                     {Object.values(row).map((value, index) => (
-                      <td scope="col" className="border px-2" key={index}>
+                      <td
+                        scope="col"
+                        className="border px-2 text-sm"
+                        key={index}
+                      >
                         {value}
                       </td>
                     ))}
