@@ -10,3 +10,7 @@ export type Color =
   | "neutral-500"
   | "neutral-600"
   | "error-500";
+
+  export interface IData {
+    [key: string]: string | number | boolean;
+  }
