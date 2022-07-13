@@ -1,26 +1,24 @@
 import { useState } from "react";
-import { IconNames } from "../../types/props";
+import { IconNames, IData } from "../../types/props";
 import FilePicker from "../atoms/FilePicker";
 import Icon from "../atoms/Icon";
 import Papa from "papaparse";
-
-interface IData {
-  [key: string]: string | number | boolean;
-}
+import Table from "./Table";
 
 export default function Import() {
   const [step, setStep] = useState(0);
   const [hasError, sethasError] = useState(false);
-  const [data, setData] = useState<IData[]>([]);
+  const [first40, setFirst40] = useState<IData[]>([]);
+  const [last10, setLast10] = useState<IData[]>([]);
   const [file, setFile] = useState<File>();
   const steps: IconNames[] = ["upload", "process", "table"];
 
   const [values, setValues] = useState({
-    depth: "",
-    inclination: "",
-    azimuth: "",
-    unitOfMeasurement: "",
-    separator: ",",
+    pressure: "",
+    slurry_rate: "",
+    prop_conc: "",
+    // unitOfMeasurement: "",
+    // separator: ",",
     numHeaderRows: 2,
   });
 
@@ -43,7 +41,9 @@ export default function Import() {
         complete: function (results) {
           try {
             console.log(results.data);
-            setData(results.data);
+            setFirst40(results.data.splice(0, 40));
+            //get last 10 rows of data
+            setLast10(results.data.splice(results.data.length - 10));
             setStep(1);
           } catch (error) {
             sethasError(true);
@@ -103,42 +103,28 @@ export default function Import() {
               <h2 className="text-xl font-bold">Define input data</h2>
               <div className="grid grid-cols-2 gap-6 py-5">
                 <div>
-                  <div className="py-1">
-                    <label>Depth</label>
+                  <div className="py-2">
+                    <label>pressure</label>
                     <select
                       className="w-full py-2 px-3 rounded-md text-sm"
-                      name="depth"
+                      name="pressure"
                       onChange={handleChange}
                     >
-                      {Object.keys(data[0]).map((key, index) => (
+                      {Object.keys(first40[0]).map((key, index) => (
                         <option value={key} key={index}>
                           {key} (col {index + 1})
                         </option>
                       ))}
                     </select>
                   </div>
-                  <div className="py-1">
-                    <label>Inclination</label>
+                  <div className="py-2">
+                    <label>Slurry rate</label>
                     <select
                       className="w-full py-2 px-3 rounded-md text-sm"
-                      name="inclination"
+                      name="slurry_rate"
                       onChange={handleChange}
                     >
-                      {Object.keys(data[0]).map((key, index) => (
-                        <option value={key} key={index}>
-                          {key} (col {index + 1})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="py-1">
-                    <label>Azimuth</label>
-                    <select
-                      className="w-full py-2 px-3 rounded-md text-sm"
-                      name="azimuth"
-                      onChange={handleChange}
-                    >
-                      {Object.keys(data[0]).map((key, index) => (
+                      {Object.keys(first40[0]).map((key, index) => (
                         <option value={key} key={index}>
                           {key} (col {index + 1})
                         </option>
@@ -147,8 +133,8 @@ export default function Import() {
                   </div>
                 </div>
                 <div>
-                  <div className="py-1">
-                    <label>Depth unit of measurement</label>
+                  {/* <div className="py-2">
+                    <label>pressure unit of measurement</label>
                     <select
                       className="w-full py-2 px-3 rounded-md text-sm"
                       name="unitOfMeasurement"
@@ -160,7 +146,7 @@ export default function Import() {
                       <option value={"km"}>Kilometer</option>
                     </select>
                   </div>
-                  <div className="py-1">
+                  <div className="py-2">
                     <label>Decimal separator</label>
                     <select
                       className="w-full py-2 px-3 rounded-md text-sm"
@@ -170,8 +156,23 @@ export default function Import() {
                       <option value=".">Dot</option>
                       <option value=",">Comma</option>
                     </select>
+                  </div> */}
+
+                  <div className="py-2">
+                    <label>Prop conc</label>
+                    <select
+                      className="w-full py-2 px-3 rounded-md text-sm"
+                      name="prop_conc"
+                      onChange={handleChange}
+                    >
+                      {Object.keys(first40[0]).map((key, index) => (
+                        <option value={key} key={index}>
+                          {key} (col {index + 1})
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  <div className="py-1">
+                  <div className="py-2">
                     <label>Number of header rows</label>
                     <input
                       className="w-full py-2 px-3 rounded-md text-sm border border-gray-500"
@@ -185,32 +186,10 @@ export default function Import() {
               </div>
             </div>
             <h2 className="text-xl font-bold">Preview</h2>
-            <table className="w-full mt-5">
-              <thead>
-                <tr>
-                  {Object.keys(data[0]).map((key, index) => (
-                    <th key={index} scope="col p-2 text-xs" className="border">
-                      {key}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((row, index) => (
-                  <tr key={index}>
-                    {Object.values(row).map((value, index) => (
-                      <td
-                        scope="col"
-                        className="border px-2 text-sm"
-                        key={index}
-                      >
-                        {value}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Table data={first40} />
+            <div className="pt-2">
+              <Table data={last10} showHeader={false} />
+            </div>
           </div>
         ) : step === 2 ? (
           <div>
