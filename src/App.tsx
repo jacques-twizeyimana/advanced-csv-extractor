@@ -1,15 +1,13 @@
-import { useState } from "react";
 import "./App.css";
-import Button from "./components/atoms/Button";
+import Import from "./components/molecules/Import";
 import Popup from "./components/molecules/Popup";
 
 function App() {
   return (
-    <div className="App p-12 bg-red-500">
-      <Button>Welcome</Button>
-      <Popup open title={"Import data"}>
+    <div className="h-screen bg-gray-50">
+      <Popup open title={"Survey import wizard"} hasBorder={false}>
         <div className="w-[700px] max-w-3xl">
-          <h2>Umport data</h2>
+          <Import />
         </div>
       </Popup>
     </div>

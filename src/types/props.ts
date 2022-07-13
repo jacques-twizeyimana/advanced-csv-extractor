@@ -1,4 +1,4 @@
-export type IconNames = "close";
+export type IconNames = "close" | "upload" | "table" | "process";
 
 export type Color =
   | "primary-400"

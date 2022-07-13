@@ -30,24 +30,21 @@ export default function Popup({
     <div className="relative">
       <div className="fixed left-0 top-0 w-screen h-screen bg-black bg-opacity-40 z-50  flex flex-col items-center justify-center">
         <ClickOutSide handleClickOutside={handleClose}>
-          <div className={`bg-white shadow-md rounded-lg px-6 py-4 relative`}>
+          <div className={`bg-white shadow-lg rounded-lg relative`}>
             <div
-              className={`flex justify-between ${
-                hasBorder && " border-b border-neutral-350  pb-1"
-              }`}
+              className={`flex justify-between rounded-t-lg px-6 bg-gray-200 border-b border-neutral-350 py-4`}
             >
-              {useDefaultTitleStyle ? (
-                <h2 className="text-xl font-bold text-neutral-200">{title}</h2>
-              ) : (
-                <div className="w-full">{title}</div>
-              )}
+              <h2 className="text-xl text-neutral-700 font-semibold">
+                {title}
+              </h2>
+
               {hasIcon && (
                 <button onClick={handleClose}>
                   <Icon name="close" size={30} />
                 </button>
               )}
             </div>
-            <div className="py-6">{children}</div>
+            <div className="py-6 px-6">{children}</div>
           </div>
         </ClickOutSide>
       </div>
