@@ -40,9 +40,9 @@ export default function Button<T>({
     <button
       disabled={disabled || isLoading}
       onClick={onClick}
-      className={`${
-        buttonStyle[styleType]
-      } text-white rounded-lg font-medium text-sm outline-none transition ease-in-out 
+      className={`
+      bg-gray-300
+      rounded-lg font-medium text-sm outline-none transition ease-in-out 
       ${full && "w-full"}
       ${
         !usePadding
