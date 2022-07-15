@@ -9,19 +9,9 @@ type PropType = {
   children: ReactNode;
   onClose?: () => void;
   hasIcon?: boolean;
-  hasBorder?: boolean;
-  useDefaultTitleStyle?: boolean;
 };
 
-export default function Popup({
-  open,
-  onClose,
-  children,
-  title,
-  hasIcon = true,
-  hasBorder = true,
-  useDefaultTitleStyle = false,
-}: PropType) {
+export default function Popup({ open, onClose, children, title, hasIcon = true }: PropType) {
   const handleClose = () => {
     if (onClose) onClose();
   };
