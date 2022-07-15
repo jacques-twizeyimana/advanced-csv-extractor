@@ -17,8 +17,8 @@ export default function Import() {
     pressure: "",
     slurry_rate: "",
     prop_conc: "",
-    // unitOfMeasurement: "",
-    // separator: ",",
+    unitOfMeasurement: "",
+    separator: ",",
     numHeaderRows: 2,
   });
 
@@ -35,7 +35,7 @@ export default function Import() {
     try {
       console.log(file);
       Papa.parse<any>(file, {
-        header: true,
+        header: false,
         skipEmptyLines: true,
         dynamicTyping: true,
         complete: function (results) {
@@ -110,8 +110,8 @@ export default function Import() {
                       name="pressure"
                       onChange={handleChange}
                     >
-                      {Object.keys(first40[0]).map((key, index) => (
-                        <option value={key} key={index}>
+                      {Object.values(first40[0]).map((key, index) => (
+                        <option value={key.toString()} key={index}>
                           {key} (col {index + 1})
                         </option>
                       ))}
@@ -124,16 +124,14 @@ export default function Import() {
                       name="slurry_rate"
                       onChange={handleChange}
                     >
-                      {Object.keys(first40[0]).map((key, index) => (
-                        <option value={key} key={index}>
+                      {Object.values(first40[0]).map((key, index) => (
+                        <option value={key.toString()} key={index}>
                           {key} (col {index + 1})
                         </option>
                       ))}
                     </select>
                   </div>
-                </div>
-                <div>
-                  {/* <div className="py-2">
+                  <div className="py-2">
                     <label>pressure unit of measurement</label>
                     <select
                       className="w-full py-2 px-3 rounded-md text-sm"
@@ -146,6 +144,8 @@ export default function Import() {
                       <option value={"km"}>Kilometer</option>
                     </select>
                   </div>
+                </div>
+                <div>
                   <div className="py-2">
                     <label>Decimal separator</label>
                     <select
@@ -156,7 +156,7 @@ export default function Import() {
                       <option value=".">Dot</option>
                       <option value=",">Comma</option>
                     </select>
-                  </div> */}
+                  </div>
 
                   <div className="py-2">
                     <label>Prop conc</label>
@@ -165,8 +165,8 @@ export default function Import() {
                       name="prop_conc"
                       onChange={handleChange}
                     >
-                      {Object.keys(first40[0]).map((key, index) => (
-                        <option value={key} key={index}>
+                      {Object.values(first40[0]).map((key, index) => (
+                        <option value={key.toString()} key={index}>
                           {key} (col {index + 1})
                         </option>
                       ))}
