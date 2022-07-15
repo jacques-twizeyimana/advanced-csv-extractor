@@ -11,6 +11,7 @@ export default function Import() {
   const [first40, setFirst40] = useState<IData[]>([]);
   const [last10, setLast10] = useState<IData[]>([]);
   const [file, setFile] = useState<File>();
+  const [totalDataLength, setTotalDataLength] = useState(0);
   const steps: IconNames[] = ["upload", "process", "table"];
 
   const [values, setValues] = useState({
@@ -41,9 +42,9 @@ export default function Import() {
         complete: function (results) {
           try {
             console.log(results.data);
-            setFirst40(results.data.splice(0, 40));
-            //get last 10 rows of data
-            setLast10(results.data.splice(results.data.length - 10));
+            setFirst40(results.data.slice(0, 41));
+            setLast10(results.data.slice(-11));
+            setTotalDataLength(results.data.length);
             setStep(1);
           } catch (error) {
             sethasError(true);
@@ -188,7 +189,11 @@ export default function Import() {
             <h2 className="text-xl font-bold">Preview</h2>
             <Table data={first40} />
             <div className="pt-2">
-              <Table data={last10} showHeader={false} />
+              <Table
+                data={last10}
+                startingRow={totalDataLength - 10}
+                showHeader={false}
+              />
             </div>
           </div>
         ) : step === 2 ? (

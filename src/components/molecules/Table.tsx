@@ -17,8 +17,11 @@ export default function Table({
         {showHeader && (
           <thead>
             <tr>
+              <th scope="col" className="border p-2 text-sm">
+                #
+              </th>
               {Object.values(data[0]).map((key, index) => (
-                <th key={index} scope="col p-2 text-xs" className="border">
+                <th key={index} scope="col" className="border p-2 text-sm">
                   {key}
                 </th>
               ))}
@@ -28,6 +31,7 @@ export default function Table({
         <tbody>
           {data.slice(1).map((row, index) => (
             <tr key={index}>
+              <td className="border px-2 text-sm">{index + startingRow + 1}</td>
               {Object.values(row).map((value, index) => (
                 <td scope="col" className="border px-2 text-sm" key={index}>
                   {value}
