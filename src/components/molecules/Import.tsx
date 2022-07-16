@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { IconNames, IData } from "../../types/props";
 import FilePicker from "../atoms/FilePicker";
 import Icon from "../atoms/Icon";
 import Papa from "papaparse";
 import Table from "./Table";
+import { ISubmitInfo } from "../../types";
 
 export default function Import() {
   const [step, setStep] = useState(0);
@@ -15,10 +16,10 @@ export default function Import() {
   const steps: IconNames[] = ["upload", "process", "table"];
 
   const [values, setValues] = useState({
-    pressure: "",
+    pressure: [],
     slurry_rate: "",
     prop_conc: "",
-    unitOfMeasurement: "",
+    unitOfPressure: "",
     separator: ",",
     numHeaderRows: 2,
   });
@@ -43,7 +44,7 @@ export default function Import() {
           try {
             console.log(results.data);
             setFirst40(results.data.slice(0, 41));
-            setLast10(results.data.slice(-11));
+            setLast10([results.data[0], ...results.data.slice(-11)]);
             setTotalDataLength(results.data.length);
             setStep(1);
           } catch (error) {
@@ -57,6 +58,28 @@ export default function Import() {
     } catch (error) {
       sethasError(true);
     }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const _data: ISubmitInfo = {
+      stage: 1,
+      well: 1,
+      offset_min: 1,
+      time: [[]],
+      slurry: {
+        data: [],
+        unit: "",
+      },
+      pressure: {
+        data: values.pressure,
+        unit: values.unitOfPressure,
+      },
+      prop: {
+        data: [],
+        unit: "",
+      },
+    };
   };
 
   return (
@@ -188,13 +211,11 @@ export default function Import() {
             </div>
             <h2 className="text-xl font-bold">Preview</h2>
             <Table data={first40} />
-            <div className="pt-2">
-              <Table
-                data={last10}
-                startingRow={totalDataLength - 10}
-                showHeader={false}
-              />
-            </div>
+            <Table
+              data={last10}
+              startingRow={totalDataLength - 10}
+              showHeader={false}
+            />
           </div>
         ) : step === 2 ? (
           <div>

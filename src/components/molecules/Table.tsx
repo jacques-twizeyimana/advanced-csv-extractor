@@ -6,6 +6,10 @@ interface ITableProps {
   startingRow?: number;
 }
 
+function fourDigitNumber(num: number) {
+  return String(num).padStart(4, "0");
+}
+
 export default function Table({
   data,
   showHeader = true,
@@ -14,26 +18,45 @@ export default function Table({
   return (
     <div className="overflow-x-auto">
       <table className="w-full mt-5">
-        {showHeader && (
-          <thead>
-            <tr>
-              <th scope="col" className="border p-2 text-sm">
-                #
+        <thead>
+          <tr className={`${!showHeader && "text-white"} border-collapse`}>
+            <th
+              scope="col"
+              className={`border ${
+                showHeader
+                  ? "border-gray-100"
+                  : "border-transparent border-b-gray-100"
+              } p-2 text-sm`}
+            >
+              #
+            </th>
+            {Object.values(data[0]).map((key, index) => (
+              <th
+                key={index}
+                scope="col"
+                className={`border ${
+                  showHeader
+                    ? "border-gray-100"
+                    : "border-transparent border-b-gray-100"
+                } p-2 text-sm`}
+              >
+                {key}
               </th>
-              {Object.values(data[0]).map((key, index) => (
-                <th key={index} scope="col" className="border p-2 text-sm">
-                  {key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-        )}
+            ))}
+          </tr>
+        </thead>
         <tbody>
           {data.slice(1).map((row, index) => (
             <tr key={index}>
-              <td className="border px-2 text-sm">{index + startingRow + 1}</td>
+              <td className="border px-2 text-sm">
+                {fourDigitNumber(index + startingRow + 1)}
+              </td>
               {Object.values(row).map((value, index) => (
-                <td scope="col" className="border px-2 text-sm" key={index}>
+                <td
+                  scope="col"
+                  className="border border-gray-100 px-2 text-sm"
+                  key={index}
+                >
                   {value}
                 </td>
               ))}
