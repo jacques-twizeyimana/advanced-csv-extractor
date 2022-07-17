@@ -78,7 +78,7 @@ export default function Multiselect({
             style={{ zIndex: -10 }}
           />
           <div
-            className={`border-2 border-${
+            className={`border border-${
               hasError ? "error-500" : "tertiary"
             } bg-white rounded-md px-4 hover:border-primary-400`}
           >
@@ -111,19 +111,15 @@ export default function Multiselect({
               onChange={handleSearch}
               id={selectId}
               onBlur={() => setisMenuOpen(false)}
-              className={`block w-full placeholder-txt-secondary h-12 text-sm  focus:outline-none font-normal cursor-pointer`}
+              className={`block w-full placeholder-txt-secondary h-10 text-sm  focus:outline-none font-normal cursor-pointer`}
             />
           </div>
 
-          {/* 
-            // type="button"
-            // onMouseDown={handleArrowClick}
-            // className="inline absolute top-0 right-0 cursor-pointer"> */}
           <label
             htmlFor={selectId}
-            className="inline absolute top-0 right-0 cursor-pointer"
+            className="inline absolute top-2 right-1 cursor-pointer my-auto"
           >
-            <Icon name={"chevron-down"} />
+            <Icon name={"chevron-down"} size={24} />
           </label>
         </div>
         {/* Dropdown menu */}
@@ -148,14 +144,14 @@ export default function Multiselect({
                     internalValue.includes(op.value.toString())
                       ? "bg-primary-500 text-white"
                       : "bg-main text-black hover:bg-blue-100"
-                  } rounded-none text-left px-4 text-base capitalize`}
+                  } rounded-none text-left px-4 text-sm capitalize`}
                 >
                   {op.label}
                 </div>
               ))}
 
               {filtered.length === 0 && (
-                <p className="py-2 text-left px-4 text-base text-gray-500">
+                <p className="py-2 text-left px-4 text-sm text-gray-500">
                   {loading ? "loading..." : "No options available"}
                 </p>
               )}
