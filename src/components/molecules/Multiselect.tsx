@@ -80,7 +80,7 @@ export default function Multiselect({
           <div
             className={`border border-${
               hasError ? "error-500" : "tertiary"
-            } bg-white rounded-md px-4 hover:border-primary-400`}
+            } bg-white rounded-md px-2 hover:border-primary-400`}
           >
             <div
               className={`flex flex-wrap w-full gap-1 ${

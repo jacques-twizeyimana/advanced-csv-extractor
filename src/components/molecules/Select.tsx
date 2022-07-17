@@ -109,7 +109,7 @@ export default function Select({
               internalValue ? "black" : "txt-secondary"
             } h-10 text-sm border border-${
               hasError ? "error-500" : "tertiary"
-            }  rounded-md px-4 focus:border-primary-500 focus:outline-none font-normal cursor-pointer`}
+            }  rounded-md px-2 focus:border-primary-500 focus:outline-none font-normal cursor-pointer`}
           />
           {/* 
             // type="button"
