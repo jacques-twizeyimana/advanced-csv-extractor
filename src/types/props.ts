@@ -45,6 +45,13 @@ export interface commonInputProps {
   disabled?: boolean;
 }
 
+export interface SelectProps extends commonInputProps {
+  loading?: boolean;
+  value?: string;
+  hasError?: boolean;
+  width?: string;
+}
+
 export interface MultiselectProps extends commonInputProps {
   loading?: boolean;
   value?: string[];
