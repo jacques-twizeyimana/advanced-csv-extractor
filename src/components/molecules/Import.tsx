@@ -18,12 +18,12 @@ export default function Import() {
   const steps: IconNames[] = ["upload", "process", "table"];
 
   const [values, setValues] = useState({
-    pressure: [],
-    slurry: [],
+    pressure: "",
+    slurry: "",
     time: [],
     unitOfSlurry: "bpm",
     unitOfPressure: "psi",
-    propConc: [],
+    propConc: "",
     unitOfPropConc: "ppg",
     separator: ",",
     numHeaderRows: 2,
@@ -71,15 +71,15 @@ export default function Import() {
       offset_min: 1,
       time: [[]],
       slurry: {
-        data: values.slurry,
+        data: [], // values.slurry,
         unit: values.unitOfSlurry,
       },
       pressure: {
-        data: values.pressure,
+        data: [], // values.pressure,
         unit: values.unitOfPressure,
       },
       prop: {
-        data: values.propConc,
+        data: [], // values.propConc,
         unit: values.unitOfPropConc,
       },
     };
@@ -124,7 +124,7 @@ export default function Import() {
           <div className="pt-6">
             <button
               className={`${
-                !file ? "bg-neutral-400" : "bg-neutral-800"
+                !file ? "bg-neutral-400" : "bg-primary-500"
               } text-white font-bold py-3 px-6 rounded-lg`}
               disabled={!file}
               onClick={handleParse}
@@ -144,7 +144,7 @@ export default function Import() {
                 <div className="py-2">
                   <label>pressure</label>
                   <div className="py-2 flex gap-1">
-                    <Multiselect
+                    <Select
                       name="pressure"
                       value={values.pressure}
                       handleChange={handleChange}
@@ -169,7 +169,7 @@ export default function Import() {
                 <div className="py-2">
                   <label>Slurry rate</label>
                   <div className="py-2 flex gap-1">
-                    <Multiselect
+                    <Select
                       name="slurry"
                       value={values.slurry}
                       handleChange={handleChange}
@@ -210,7 +210,7 @@ export default function Import() {
                 <div className="py-2">
                   <label>Pronc conc</label>
                   <div className="py-2 flex gap-1">
-                    <Multiselect
+                    <Select
                       name="propConc"
                       value={values.propConc}
                       handleChange={handleChange}
@@ -266,18 +266,16 @@ export default function Import() {
           </div>
           <div className="table-data py-2">
             <h2 className="text-xl font-bold">Preview</h2>
-            <Table data={first40} />
-            <div className="py-5 text-4xl text-center -mb-24">...</div>
             <Table
-              data={last10}
+              data={first40}
+              bottomData={last10}
               startingRow={totalDataLength - 10}
-              showHeader={false}
             />
           </div>
           <div className="py-12">
             <button
               className={`${
-                iMissingData ? "bg-neutral-400" : "bg-neutral-800"
+                iMissingData ? "bg-neutral-400" : "bg-primary-500"
               } text-white font-medium py-3 px-6 rounded-lg`}
               disabled={iMissingData}
               type="submit"

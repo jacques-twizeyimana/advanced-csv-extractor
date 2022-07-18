@@ -5,7 +5,8 @@ export type IconNames =
   | "upload"
   | "table"
   | "process"
-  | "chevron-down";
+  | "chevron-down"
+  | "triangle";
 
 export type Color =
   | "primary-400"
