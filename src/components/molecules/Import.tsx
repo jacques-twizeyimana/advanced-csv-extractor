@@ -267,6 +267,7 @@ export default function Import() {
           <div className="table-data py-2">
             <h2 className="text-xl font-bold">Preview</h2>
             <Table data={first40} />
+            <div className="py-5 text-4xl text-center -mb-24">...</div>
             <Table
               data={last10}
               startingRow={totalDataLength - 10}
