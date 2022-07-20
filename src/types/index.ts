@@ -11,6 +11,7 @@ export interface ISubmitInfo {
   slurry: Islurry;
   pressure: Islurry;
   prop: Islurry;
+  time_shift: number;
 }
 
 /*

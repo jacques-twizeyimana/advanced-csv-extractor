@@ -27,6 +27,7 @@ export default function Import() {
     unitOfPropConc: "ppg",
     separator: ",",
     numHeaderRows: 2,
+    time_shift: 0,
   });
 
   const handleChange = (e: ValueType) => {
@@ -69,6 +70,7 @@ export default function Import() {
       stage: 1,
       well: 1,
       offset_min: 1,
+      time_shift: values.time_shift,
       time: [[]],
       slurry: {
         data: [], // values.slurry,
@@ -205,6 +207,22 @@ export default function Import() {
                     />
                   </div>
                 </div>
+
+                <div className="py-2">
+                  <label>Time shift</label>
+                  <input
+                    className="w-2/3 block py-2 px-3 rounded-md text-sm border border-gray-500"
+                    type="number"
+                    name="time_shift"
+                    value={values.time_shift}
+                    onChange={(e) =>
+                      setValues({
+                        ...values,
+                        time_shift: parseInt(e.target.value),
+                      })
+                    }
+                  />
+                </div>
               </div>
               <div className="right-selects">
                 <div className="py-2">
@@ -246,10 +264,11 @@ export default function Import() {
                     />
                   </div>
                 </div>
+
                 <div className="py-2">
                   <label>Number of header rows</label>
                   <input
-                    className="w-full py-2 px-3 rounded-md text-sm border border-gray-500"
+                    className="w-2/3 block py-2 px-3 rounded-md text-sm border border-gray-500"
                     type="number"
                     name="numHeaderRows"
                     value={values.numHeaderRows}
