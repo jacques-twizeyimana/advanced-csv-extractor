@@ -47,8 +47,8 @@ export default function Import() {
         complete: function (results) {
           try {
             console.log(results.data);
-            setFirst40(results.data.slice(0, 41));
-            setLast10([results.data[0], ...results.data.slice(-11)]);
+            setFirst40(results.data.slice(0, 40));
+            setLast10([results.data[0], ...results.data.slice(-10)]);
             setTotalDataLength(results.data.length);
             setStep(1);
           } catch (error) {
@@ -63,6 +63,8 @@ export default function Import() {
       sethasError(true);
     }
   };
+
+  console.log(last10);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
