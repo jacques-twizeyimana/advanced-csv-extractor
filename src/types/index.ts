@@ -7,7 +7,7 @@ export interface ISubmitInfo {
   stage: number;
   well: number;
   offset_min: number;
-  time: Array<Array<Number>>;
+  time: Array<Number>;
   slurry: Islurry;
   pressure: Islurry;
   prop: Islurry;

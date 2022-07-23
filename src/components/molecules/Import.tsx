@@ -10,7 +10,7 @@ import Select from "./Select";
 interface IExtractedData {
   first40: IData[];
   last10: IData[];
-  totalLength: number;
+  all: IData[];
 }
 
 export default function Import() {
@@ -22,7 +22,7 @@ export default function Import() {
   const [extractedData, setExtractedData] = useState<IExtractedData>({
     first40: [],
     last10: [],
-    totalLength: 0,
+    all: [],
   });
 
   const steps: IconNames[] = ["upload", "process", "table"];
@@ -50,18 +50,16 @@ export default function Import() {
 
     if (!file) return;
     try {
-      console.log(file);
       Papa.parse<any>(file, {
         header: false,
         skipEmptyLines: true,
         dynamicTyping: true,
         complete: function (results) {
           try {
-            console.log(results.data);
             setExtractedData({
               first40: results.data.slice(0, 40),
               last10: results.data.slice(-10),
-              totalLength: results.data.length,
+              all: results.data,
             });
 
             setStep(1);
@@ -80,25 +78,35 @@ export default function Import() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    //remove header rows from data
+    const data = extractedData.all.slice(values.numHeaderRows);
+
+    const pressureData = data.map((x) => Number(x[parseInt(values.pressure)]));
+    const slurryData = data.map((x) => Number(x[parseInt(values.slurry)]));
+    const propConcData = data.map((x) => Number(x[parseInt(values.propConc)]));
+
     const _data: ISubmitInfo = {
       stage: 1,
       well: 1,
       offset_min: 1,
       time_shift: values.time_shift,
-      time: [[]],
+      time: [],
       slurry: {
-        data: [], // values.slurry,
+        data: slurryData,
         unit: values.unitOfSlurry,
       },
       pressure: {
-        data: [], // values.pressure,
+        data: pressureData,
         unit: values.unitOfPressure,
       },
       prop: {
-        data: [], // values.propConc,
+        data: propConcData,
         unit: values.unitOfPropConc,
       },
     };
+
+    console.log(_data);
   };
 
   const isMissingData =
@@ -351,7 +359,7 @@ export default function Import() {
             <Table
               data={extractedData.first40}
               bottomData={extractedData.last10}
-              startingRow={extractedData.totalLength - 10}
+              startingRow={extractedData.all.length}
             />
           </div>
           <div className="py-12">
