@@ -5,29 +5,40 @@ import Icon from "../atoms/Icon";
 import Papa from "papaparse";
 import Table from "./Table";
 import { ISubmitInfo } from "../../types";
-import Multiselect from "./Multiselect";
 import Select from "./Select";
+
+interface IExtractedData {
+  first40: IData[];
+  last10: IData[];
+  totalLength: number;
+}
 
 export default function Import() {
   const [step, setStep] = useState(0);
-  const [hasError, sethasError] = useState(false);
-  const [first40, setFirst40] = useState<IData[]>([]);
-  const [last10, setLast10] = useState<IData[]>([]);
   const [file, setFile] = useState<File>();
-  const [totalDataLength, setTotalDataLength] = useState(0);
-  const steps: IconNames[] = ["upload", "process", "table"];
+  const [hasError, sethasError] = useState(false);
+  const [useFrequency, setUseFrequency] = useState(false);
 
+  const [extractedData, setExtractedData] = useState<IExtractedData>({
+    first40: [],
+    last10: [],
+    totalLength: 0,
+  });
+
+  const steps: IconNames[] = ["upload", "process", "table"];
   const [values, setValues] = useState({
+    starttime: "",
+    frequency: 1,
     pressure: "",
     slurry: "",
-    time: [],
+    elapsedTime: "",
     unitOfSlurry: "bpm",
     unitOfPressure: "psi",
     propConc: "",
     unitOfPropConc: "ppg",
     separator: ",",
     numHeaderRows: 2,
-    time_shift: 0,
+    time_shift: 2,
   });
 
   const handleChange = (e: ValueType) => {
@@ -47,9 +58,12 @@ export default function Import() {
         complete: function (results) {
           try {
             console.log(results.data);
-            setFirst40(results.data.slice(0, 40));
-            setLast10([results.data[0], ...results.data.slice(-10)]);
-            setTotalDataLength(results.data.length);
+            setExtractedData({
+              first40: results.data.slice(0, 40),
+              last10: results.data.slice(-10),
+              totalLength: results.data.length,
+            });
+
             setStep(1);
           } catch (error) {
             sethasError(true);
@@ -63,8 +77,6 @@ export default function Import() {
       sethasError(true);
     }
   };
-
-  console.log(last10);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -89,7 +101,7 @@ export default function Import() {
     };
   };
 
-  const iMissingData =
+  const isMissingData =
     !values.pressure ||
     !values.slurry ||
     !values.propConc ||
@@ -152,10 +164,12 @@ export default function Import() {
                       name="pressure"
                       value={values.pressure}
                       handleChange={handleChange}
-                      options={Object.values(first40[0]).map((key, index) => ({
-                        label: `${key} - (col ${index + 1})`,
-                        value: index,
-                      }))}
+                      options={Object.values(extractedData.first40[0]).map(
+                        (key, index) => ({
+                          label: `${key} - (col ${index + 1})`,
+                          value: index,
+                        })
+                      )}
                     />
 
                     <Select
@@ -177,10 +191,12 @@ export default function Import() {
                       name="slurry"
                       value={values.slurry}
                       handleChange={handleChange}
-                      options={Object.values(first40[0]).map((key, index) => ({
-                        label: `${key} - (col ${index + 1})`,
-                        value: index,
-                      }))}
+                      options={Object.values(extractedData.first40[0]).map(
+                        (key, index) => ({
+                          label: `${key} - (col ${index + 1})`,
+                          value: index,
+                        })
+                      )}
                     />
 
                     <Select
@@ -195,38 +211,6 @@ export default function Import() {
                     />
                   </div>
                 </div>
-                <div className="py-2 ">
-                  <label>Time column</label>
-                  <div className="flex py-2">
-                    <Multiselect
-                      name="time"
-                      handleChange={handleChange}
-                      value={values.time}
-                      options={Object.values(first40[0]).map((key, index) => ({
-                        label: `${key} - (col ${index + 1})`,
-                        value: index,
-                      }))}
-                    />
-                  </div>
-                </div>
-
-                <div className="py-2">
-                  <label>Time shift</label>
-                  <input
-                    className="w-2/3 block py-2 px-3 rounded-md text-sm border border-gray-500"
-                    type="number"
-                    name="time_shift"
-                    value={values.time_shift}
-                    onChange={(e) =>
-                      setValues({
-                        ...values,
-                        time_shift: parseInt(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="right-selects">
                 <div className="py-2">
                   <label>Pronc conc</label>
                   <div className="py-2 flex gap-1">
@@ -234,10 +218,12 @@ export default function Import() {
                       name="propConc"
                       value={values.propConc}
                       handleChange={handleChange}
-                      options={Object.values(first40[0]).map((key, index) => ({
-                        label: `${key} - (col ${index + 1})`,
-                        value: index,
-                      }))}
+                      options={Object.values(extractedData.first40[0]).map(
+                        (key, index) => ({
+                          label: `${key} - (col ${index + 1})`,
+                          value: index,
+                        })
+                      )}
                     />
 
                     <Select
@@ -254,7 +240,7 @@ export default function Import() {
                 </div>
                 <div className="py-2">
                   <label>Decimal separator</label>
-                  <div className="py-2 flex">
+                  <div className="py-2 w-2/3">
                     <Select
                       name="separator"
                       handleChange={handleChange}
@@ -266,11 +252,86 @@ export default function Import() {
                     />
                   </div>
                 </div>
+              </div>
+              <div className="right-selects w-2/3">
+                <div className="py-2">
+                  <label>Start time</label>
+                  <input
+                    className="w-full block py-2 px-3 rounded-md text-sm border border-gray-500"
+                    type="datetime-local"
+                    name="starttime"
+                    value={values.starttime}
+                    onChange={(e) =>
+                      setValues({
+                        ...values,
+                        starttime: e.target.value,
+                      })
+                    }
+                  />
+                </div>
 
+                {!useFrequency ? (
+                  <div className="pt-2 ">
+                    <label>Elapsed time</label>
+                    <div className="py-2">
+                      <Select
+                        name="elapsedTime"
+                        handleChange={handleChange}
+                        value={values.elapsedTime}
+                        options={Object.values(extractedData.first40[0]).map(
+                          (key, index) => ({
+                            label: `${key} - (col ${index + 1})`,
+                            value: index,
+                          })
+                        )}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="pt-2">
+                    <label>Frequency</label>
+                    <input
+                      className="w-full block py-2 px-3 rounded-md text-sm border border-gray-500"
+                      type="number"
+                      name="frequency"
+                      value={values.frequency}
+                      onChange={(e) =>
+                        setValues({
+                          ...values,
+                          frequency: parseFloat(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                )}
+                <div className="-mt-1 text-right">
+                  <button
+                    className="text-blue-400 text-sm py-2 px-4"
+                    onClick={() => setUseFrequency(!useFrequency)}
+                    type="button"
+                  >
+                    {useFrequency ? "Use elapsed time" : "Use frequency"}
+                  </button>
+                </div>
+                <div className="py-2">
+                  <label>Time shift</label>
+                  <input
+                    className="w-full block py-2 px-3 rounded-md text-sm border border-gray-500"
+                    type="number"
+                    name="time_shift"
+                    value={values.time_shift}
+                    onChange={(e) =>
+                      setValues({
+                        ...values,
+                        time_shift: parseInt(e.target.value),
+                      })
+                    }
+                  />
+                </div>
                 <div className="py-2">
                   <label>Number of header rows</label>
                   <input
-                    className="w-2/3 block py-2 px-3 rounded-md text-sm border border-gray-500"
+                    className="w-full block py-2 px-3 rounded-md text-sm border border-gray-500"
                     type="number"
                     name="numHeaderRows"
                     value={values.numHeaderRows}
@@ -288,17 +349,17 @@ export default function Import() {
           <div className="table-data py-2">
             <h2 className="text-xl font-bold">Preview</h2>
             <Table
-              data={first40}
-              bottomData={last10}
-              startingRow={totalDataLength - 10}
+              data={extractedData.first40}
+              bottomData={extractedData.last10}
+              startingRow={extractedData.totalLength - 10}
             />
           </div>
           <div className="py-12">
             <button
               className={`${
-                iMissingData ? "bg-neutral-400" : "bg-primary-500"
+                isMissingData ? "bg-neutral-400" : "bg-primary-500"
               } text-white font-medium py-3 px-6 rounded-lg`}
-              disabled={iMissingData}
+              disabled={isMissingData}
               type="submit"
               onClick={handleSubmit}
             >
