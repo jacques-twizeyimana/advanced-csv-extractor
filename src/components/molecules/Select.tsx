@@ -57,6 +57,7 @@ export default function Select({
   }, [internalValue, options, placeholder]);
 
   const handleSelect = (value: string) => {
+    setsearchQuery("");
     setInternalValue(value);
   };
 

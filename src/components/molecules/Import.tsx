@@ -6,6 +6,11 @@ import Papa from "papaparse";
 import Table from "./Table";
 import { ISubmitInfo } from "../../types";
 import Select from "./Select";
+import _ from "lodash";
+import {
+  calculateUnixTimestampGivenFrequency,
+  getUnixTimestampByElapsedTime,
+} from "../../utils/functions";
 
 interface IExtractedData {
   first40: IData[];
@@ -38,7 +43,7 @@ export default function Import() {
     unitOfPropConc: "ppg",
     separator: ",",
     numHeaderRows: 2,
-    time_shift: 2,
+    time_shift: 0,
   });
 
   const handleChange = (e: ValueType) => {
@@ -79,8 +84,8 @@ export default function Import() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    //remove header rows from data
-    const data = extractedData.all.slice(values.numHeaderRows);
+    //remove header rows
+    const data = extractedData.all.slice(Math.abs(values.numHeaderRows));
 
     const pressureData = data.map((x) => Number(x[parseInt(values.pressure)]));
     const slurryData = data.map((x) => Number(x[parseInt(values.slurry)]));
@@ -91,7 +96,20 @@ export default function Import() {
       well: 1,
       offset_min: 1,
       time_shift: values.time_shift,
-      time: [],
+      time: useFrequency
+        ? calculateUnixTimestampGivenFrequency(
+            values.starttime,
+            values.time_shift,
+            values.frequency,
+            data
+          )
+        : getUnixTimestampByElapsedTime(
+            values.starttime,
+            values.time_shift,
+            parseInt(values.elapsedTime),
+            data
+          ),
+
       slurry: {
         data: slurryData,
         unit: values.unitOfSlurry,
