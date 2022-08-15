@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SelectData, SelectProps } from "../../types/props";
 import { randomString } from "../../utils/random";
 import Icon from "../atoms/Icon";

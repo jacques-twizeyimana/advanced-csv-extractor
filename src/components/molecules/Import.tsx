@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { IconNames, IData, ValueType } from "../../types/props";
 import FilePicker from "../atoms/FilePicker";
 import Icon from "../atoms/Icon";
@@ -11,6 +11,8 @@ import {
   calculateUnixTimestampGivenFrequency,
   getUnixTimestampByElapsedTime,
 } from "../../utils/functions";
+
+import "../../style/style.css";
 
 interface IExtractedData {
   first40: IData[];

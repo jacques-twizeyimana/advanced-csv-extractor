@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, DOMAttributes, ReactNode } from "react";
+import React, { ButtonHTMLAttributes, DOMAttributes, ReactNode } from "react";
 import { Color } from "../../types/props";
 
 type ButtonType = "fill" | "outline" | "text";

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import Button from "../atoms/Button";
 import Icon from "../atoms/Icon";
 import { ClickOutSide } from "./ClickOutSide";
@@ -11,7 +11,13 @@ type PropType = {
   hasIcon?: boolean;
 };
 
-export default function Popup({ open, onClose, children, title, hasIcon = true }: PropType) {
+export default function Popup({
+  open,
+  onClose,
+  children,
+  title,
+  hasIcon = true,
+}: PropType) {
   const handleClose = () => {
     if (onClose) onClose();
   };

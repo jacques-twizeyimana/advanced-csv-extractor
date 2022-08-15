@@ -1,3 +1,4 @@
+import React from "react";
 import { IconNames } from "../../types/props";
 
 interface IconProps {

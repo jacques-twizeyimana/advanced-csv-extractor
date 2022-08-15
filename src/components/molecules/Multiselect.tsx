@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MultiselectProps, SelectData } from "../../types/props";
 import { arrayEquals } from "../../utils/array";
 import { randomString } from "../../utils/random";

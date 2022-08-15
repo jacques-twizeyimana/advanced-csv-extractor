@@ -1,3 +1,4 @@
+import React from "react";
 import { IData } from "../../types/props";
 import Icon from "../atoms/Icon";
 
